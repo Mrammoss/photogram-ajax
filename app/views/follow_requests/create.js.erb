@@ -1,0 +1,1 @@
+$("#follow_form_<%= @follow_request.recipient_id %>").replaceWith("<%= j(render partial: 'follow_requests/follow_unfollow', locals: { recipient: @follow_request.recipient }) %>");
