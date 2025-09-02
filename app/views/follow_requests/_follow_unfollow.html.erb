@@ -1,20 +1,30 @@
-<% unless current_user == recipient %>
+<div id="follow_form_<%= recipient.id %>">
   <% follow_request = current_user.sent_follow_requests.find_by(recipient: recipient) %>
 
   <% if follow_request %>
     <% if follow_request.pending? %>
-      <%= link_to follow_request, method: :delete, class: "btn btn-outline-secondary", remote: true do %>
-        Un-request
-      <% end %>
+      <%= link_to "Un-request",
+                  follow_request_path(follow_request),
+                  method: :delete,
+                  remote: true,
+                  id: "unrequest_#{follow_request.id}",
+                  class: "btn btn-outline-warning btn-sm" %>
     <% elsif follow_request.accepted? %>
-      <%= link_to follow_request, method: :delete, class: "btn btn-outline-secondary", remote: true do %>
-        Un-follow
-      <% end %>
+      <%= link_to "Un-follow",
+                  follow_request_path(follow_request),
+                  method: :delete,
+                  remote: true,
+                  id: "unfollow_#{follow_request.id}",
+                  class: "btn btn-outline-danger btn-sm" %>
     <% end %>
   <% else %>
-    <div id="form_<%= recipient.id %>">
-      <%= render "follow_requests/form", follow_request: current_user.sent_follow_requests.build(recipient: recipient) %>
-    </div>
-  <% end %>
+    <%= form_with(model: current_user.sent_follow_requests.build(recipient: recipient),
+                  id: "follow_form_#{recipient.id}",
+                  local: false,
+                  html: { class: "d-inline-block" }) do |form| %>
 
-<% end %>
+      <%= form.hidden_field :recipient_id, value: recipient.id %>
+      <%= form.submit "Follow", class: "btn btn-outline-success btn-sm" %>
+    <% end %>
+  <% end %>
+</div>
