@@ -1,17 +1,25 @@
-<div>
+<div id="<%= dom_id(photo) %>_likes">
   <div class="d-flex align-items-center">
     <%= pluralize(photo.likes_count, "like") %>
 
     <% like = current_user.likes.find_by(photo: photo) %>
 
     <% if like %>
-      <%= link_to like, class: "btn btn-link link-underline-dark link-underline-opacity-0 link-underline-opacity-100-hover", method: :delete do %>
-        <i class="fas fa-heart fa-fw"></i>
-
-        Un-like
+      <%= link_to like_path(like),
+                  method: :delete,
+                  remote: true,
+                  class: "btn btn-link text-danger ms-2" do %>
+        <i class="fas fa-heart fa-fw"></i> Un-like
       <% end %>
     <% else %>
-      <%= render "likes/form", like: photo.likes.build(fan: current_user) %>
+      <%= form_with(model: photo.likes.build(fan: current_user),
+                    url: likes_path,
+                    method: :post,
+                    remote: true,
+                    html: { class: "d-inline-block ms-2" }) do |form| %>
+        <%= form.hidden_field :photo_id, value: photo.id %>
+        <%= form.submit "Like", class: "btn btn-link" %>
+      <% end %>
     <% end %>
   </div>
 </div>

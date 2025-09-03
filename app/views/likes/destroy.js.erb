@@ -1,1 +1,1 @@
-$("#<%= dom_id(@like.photo) %>").replaceWith("<%= j(render "photos/likes", photo: @like.photo) %>")
+$("#<%= dom_id(@photo) %>_likes").html("<%= j render('photos/likes', photo: @photo) %>");
